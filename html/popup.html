@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间管理助手</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .work-type-selector {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .work-type-select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-left: 8px;
+            min-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 计时器模块 -->
+        <div class="timer-section">
+            <h2>计时器</h2>
+            <div class="timer-display">00:00:00</div>
+            <div class="work-type-selector">
+                <label for="work-type-select">选择类型:</label>
+                <select id="work-type-select" class="work-type-select"></select>
+            </div>
+            <div class="timer-controls">
+                <button id="start-btn" class="control-btn"><i class="fas fa-play"></i> 开始</button>
+                <button id="pause-btn" class="control-btn" disabled><i class="fas fa-pause"></i> 暂停</button>
+                <button id="resume-btn" class="control-btn" disabled><i class="fas fa-redo"></i> 继续</button>
+                <button id="end-btn" class="control-btn" disabled><i class="fas fa-stop"></i> 结束</button>
+            </div>
+        </div>
+
+        <!-- 统计数据模块 -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-value" id="total-work-time">0</div>
+                <div class="stat-label">总工作时间 (分钟)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="excluding-life-time">0</div>
+                <div class="stat-label">除生活外总用时 (分钟)</div>
+            </div>
+        </div>
+
+        <!-- 操作按钮区 -->
+        <div class="action-buttons">
+            <button id="add-record-btn" class="action-btn"><i class="fas fa-plus"></i> 手动添加记录</button>
+            <button id="export-btn" class="action-btn"><i class="fas fa-file-export"></i> 导出到Excel</button>
+            <button id="generate-report-btn" class="action-btn"><i class="fas fa-file-alt"></i> 生成报告</button>
+            <button id="settings-btn" class="action-btn"><i class="fas fa-cog"></i> 设置</button>
+        </div>
+
+        <!-- 工作记录表格 -->
+        <div class="records-section">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>工作记录</h3>
+                <button id="delete-all-records-btn" class="action-btn" style="background-color: #ea4335; padding: 5px 10px; font-size: 12px;"><i class="fas fa-trash-alt"></i> 删除所有记录</button>
+            </div>
+            <div class="records-table-container">
+                <table class="records-table">
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>开始时间</th>
+                            <th>结束时间</th>
+                            <th>净时间</th>
+                            <th>具体内容</th>
+                            <th>选择类型</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records-table-body">
+                        <!-- 记录将通过JavaScript动态生成 -->
+                        <tr class="no-records">
+                            <td colspan="7">暂无记录</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/popup.js"></script>
+</body>
+</html>

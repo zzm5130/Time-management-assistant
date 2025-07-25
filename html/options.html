@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间管理助手 - 设置</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .settings-container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .settings-section {
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .settings-section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #4285f4;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .setting-item:hover {
+            background-color: #f5f5f5;
+        }
+        .setting-label {
+            display: flex;
+            flex-direction: column;
+        }
+        .setting-description {
+            font-size: 12px;
+            color: #757575;
+            margin-top: 4px;
+        }
+        .work-types-list {
+            margin-top: 15px;
+        }
+        .work-type-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .add-work-type {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .add-work-type input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+        }
+        .save-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: block;
+            margin: 20px auto;
+        }
+        .status-message {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background-color: #e8f5e9;
+            color: #4caf50;
+            display: block;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4285f4;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <h1>设置</h1>
+
+        <div class="settings-section">
+            <h2>功能开关</h2>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <span>计时器功能</span>
+                    <span class="setting-description">启用或禁用计时器核心功能</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="timer-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <span>统计数据</span>
+                    <span class="setting-description">启用或禁用时间统计和报表功能</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="statistics-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <span>数据导出</span>
+                    <span class="setting-description">启用或禁用Excel导出功能</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="export-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <span>手动记录</span>
+                    <span class="setting-description">启用或禁用手动添加记录</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="manual-record-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h2>选择类型管理</h2>
+            <p>管理您的选择类型分类</p>
+            <div class="work-types-list" id="work-types-list">
+                <!-- 工作类型将通过JavaScript动态生成 -->
+            </div>
+            <div class="add-work-type">
+                <input type="text" id="new-work-type" placeholder="输入新的选择类型">
+                <button id="add-type-btn" class="action-btn">添加</button>
+            </div>
+        </div>
+
+
+
+        <button id="save-settings" class="save-btn"><i class="fas fa-save"></i> 保存设置</button>
+        <div class="status-message" id="status-message"></div>
+    </div>
+
+    <script type="module" src="../js/options.js"></script>
+</body>
+</html>

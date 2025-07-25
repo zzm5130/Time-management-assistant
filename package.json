@@ -1,0 +1,15 @@
+{
+  "name": "test12",
+  "version": "1.0.0",
+  "description": "这是一个基于浏览器的时间管理插件，灵感来源于用户提供的时间跟踪界面。插件提供计时器功能、工作记录管理、数据统计分析，并支持本地数据存储和功能设置开关。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
