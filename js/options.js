@@ -7,10 +7,6 @@ import StorageManager from './storage.js';
 class SettingsManager {
     constructor() {
         // DOM元素
-        this.timerToggle = document.getElementById('timer-toggle');
-        this.statisticsToggle = document.getElementById('statistics-toggle');
-        this.exportToggle = document.getElementById('export-toggle');
-        this.manualRecordToggle = document.getElementById('manual-record-toggle');
         this.workTypesList = document.getElementById('work-types-list');
         this.newWorkTypeInput = document.getElementById('new-work-type');
         this.addTypeBtn = document.getElementById('add-type-btn');
@@ -43,13 +39,6 @@ class SettingsManager {
     loadSettings() {
         return new Promise((resolve) => {
             this.currentSettings = StorageManager.getSettings();
-
-            // 设置功能开关
-            this.timerToggle.checked = this.currentSettings.features?.timer ?? true;
-            this.statisticsToggle.checked = this.currentSettings.features?.statistics ?? true;
-            this.exportToggle.checked = this.currentSettings.features?.export ?? true;
-            this.manualRecordToggle.checked = this.currentSettings.features?.manualRecord ?? true;
-
             resolve();
         });
     }
@@ -92,11 +81,7 @@ class SettingsManager {
             if (e.key === 'Enter') this.addWorkType();
         });
 
-        // 功能开关事件
-        this.timerToggle.addEventListener('change', () => this.saveSettings());
-        this.statisticsToggle.addEventListener('change', () => this.saveSettings());
-        this.exportToggle.addEventListener('change', () => this.saveSettings());
-        this.manualRecordToggle.addEventListener('change', () => this.saveSettings());
+
 
         // 保存设置按钮
         this.saveSettingsBtn.addEventListener('click', () => this.saveSettings());
@@ -146,17 +131,6 @@ class SettingsManager {
      * 保存设置
      */
     saveSettings() {
-        // 更新功能开关设置
-        const features = {
-            timer: this.timerToggle.checked,
-            statistics: this.statisticsToggle.checked,
-            export: this.exportToggle.checked,
-            manualRecord: this.manualRecordToggle.checked
-        };
-
-        // 更新设置对象
-        this.currentSettings.features = features;
-
         // 保存到本地存储
         StorageManager.saveSettings(this.currentSettings);
 

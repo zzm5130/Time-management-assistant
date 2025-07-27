@@ -18,12 +18,6 @@ const StorageManager = {
         // 初始化设置
         if (!localStorage.getItem(this.STORAGE_KEYS.SETTINGS)) {
             const defaultSettings = {
-                features: {
-                    timer: true,
-                    statistics: true,
-                    export: true,
-                    manualRecord: true
-                },
                 workTypes: ['工作', '生活', '运动', '学习'],
                 dateFormat: 'yyyy-MM-dd',
                 timeFormat: 'HH:mm'

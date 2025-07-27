@@ -49,18 +49,39 @@ class TimerManager {
     }
 
     /**
-     * 从本地存储加载计时器状态
+     * 从background.js加载计时器状态
      */
     loadTimerState() {
-        const timerState = StorageManager.getCurrentTimer();
-        if (timerState && timerState.isRunning) {
-            this.isRunning = true;
-            this.startTime = timerState.startTime;
-            this.elapsedTime = timerState.elapsedTime;
-            this.updateTimerDisplay();
-            this.startTimer();
-            this.updateButtonStates();
-        }
+        // 首先尝试从background.js获取状态
+        chrome.runtime.sendMessage({ type: 'GET_TIMER_STATUS' }, (response) => {
+            if (response && response.isRunning) {
+                this.isRunning = true;
+                this.startTime = response.startTime;
+                this.elapsedTime = response.elapsedTime;
+                this.updateTimerDisplay();
+                this.timerInterval = setInterval(() => this.updateTimerDisplay(), 1000);
+                this.updateButtonStates();
+            } else {
+                // 如果background.js没有运行状态，检查本地存储
+                const timerState = StorageManager.getCurrentTimer();
+                if (timerState && timerState.isRunning) {
+                    this.isRunning = true;
+                    this.startTime = timerState.startTime;
+                    this.elapsedTime = timerState.elapsedTime;
+                    this.updateTimerDisplay();
+                    // 恢复background.js的计时
+                    chrome.runtime.sendMessage({
+                        type: 'START_TIMER',
+                        data: {
+                            startTime: this.startTime,
+                            elapsedTime: this.elapsedTime
+                        }
+                    });
+                    this.timerInterval = setInterval(() => this.updateTimerDisplay(), 1000);
+                    this.updateButtonStates();
+                }
+            }
+        });
     }
 
     /**
@@ -108,6 +129,16 @@ class TimerManager {
 
         this.isRunning = true;
         this.startTime = Date.now() - this.elapsedTime;
+        
+        // 通知background.js开始计时
+        chrome.runtime.sendMessage({
+            type: 'START_TIMER',
+            data: {
+                startTime: this.startTime,
+                elapsedTime: this.elapsedTime
+            }
+        });
+        
         this.timerInterval = setInterval(() => this.updateTimerDisplay(), 1000);
         this.updateButtonStates();
         // 保存计时器状态
@@ -127,6 +158,12 @@ class TimerManager {
         this.isRunning = false;
         clearInterval(this.timerInterval);
         this.elapsedTime = Date.now() - this.startTime;
+        
+        // 通知background.js暂停计时
+        chrome.runtime.sendMessage({
+            type: 'PAUSE_TIMER'
+        });
+        
         this.updateButtonStates();
         // 保存计时器状态
         StorageManager.saveCurrentTimer({
@@ -174,6 +211,11 @@ class TimerManager {
         // 保存记录
         StorageManager.addRecord(record);
 
+        // 通知background.js清除计时器
+        chrome.runtime.sendMessage({
+            type: 'CLEAR_TIMER'
+        });
+        
         // 重置计时器
         this.resetTimer();
         // 更新记录表格
@@ -198,8 +240,23 @@ class TimerManager {
      * 更新计时器显示
      */
     updateTimerDisplay() {
-        const elapsedMs = this.isRunning ? Date.now() - this.startTime : this.elapsedTime;
-        this.timerDisplay.textContent = this.formatDuration(elapsedMs);
+        if (this.isRunning) {
+            // 如果计时器正在运行，从background.js获取最新状态
+            chrome.runtime.sendMessage({ type: 'GET_TIMER_STATUS' }, (response) => {
+                if (response && response.isRunning) {
+                    const elapsedMs = Date.now() - response.startTime;
+                    this.timerDisplay.textContent = this.formatDuration(elapsedMs);
+                    this.elapsedTime = elapsedMs;
+                } else {
+                    // 如果background.js没有运行状态，使用本地计算
+                    const elapsedMs = Date.now() - this.startTime;
+                    this.timerDisplay.textContent = this.formatDuration(elapsedMs);
+                }
+            });
+        } else {
+            // 如果计时器暂停，显示已记录的时间
+            this.timerDisplay.textContent = this.formatDuration(this.elapsedTime);
+        }
     }
 
     /**

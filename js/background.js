@@ -14,12 +14,6 @@ chrome.runtime.onInstalled.addListener(() => {
         if (!result.timeTracker_settings) {
             chrome.storage.local.set({
                 timeTracker_settings: {
-                    features: {
-                        timer: true,
-                        statistics: true,
-                        export: true,
-                        manualRecord: true
-                    },
                     workTypes: ['工作', '生活', '运动', '学习'],
                     notifications: true
                 }
